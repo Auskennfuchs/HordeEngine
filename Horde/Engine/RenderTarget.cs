@@ -2,9 +2,14 @@
 
 namespace Horde.Engine
 {
-    class RenderTarget
+    public class RenderTarget
     {
         private RenderTargetView rtv;
+
+        public RenderTargetView View
+        {
+            get { return rtv; }
+        }          
 
         public RenderTarget(Resource res)
         {
@@ -13,11 +18,16 @@ namespace Horde.Engine
 
         public void ReCreate(Resource res)
         {
-            if(rtv!=null)
+            Dispose();
+            rtv = new RenderTargetView(HordeEngine.Instance.Device, res);
+        }
+
+        public void Dispose()
+        {
+            if (rtv != null)
             {
                 rtv.Dispose();
             }
-            rtv = new RenderTargetView(HordeEngine.Instance.Device, res);
         }
     }
 }

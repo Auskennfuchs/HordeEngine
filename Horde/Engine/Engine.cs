@@ -17,7 +17,7 @@ namespace Horde.Engine
             get { return device; }
         }
         private SwapChain swapChain;
-        private RenderTargetView rtv;
+        private RenderTarget rtv;
         private DeviceContext devContext;
         public DeviceContext DeviceContext
         {
@@ -32,6 +32,8 @@ namespace Horde.Engine
                 return instance;
             }
         }
+
+        private int formWidth, formHeight;
 
         public HordeEngine()
         {
@@ -56,6 +58,13 @@ namespace Horde.Engine
 
         public void Init(Form form)
         {
+            formWidth = form.Width;
+            formHeight = form.Height;
+            form.ResizeBegin += (o, e) =>
+            {
+                formHeight = ((Form)o).Height;
+                formWidth = ((Form)o).Width;
+            };
             form.ResizeEnd += HandleResize;
 
             form.KeyDown += HandleKeyDown;
@@ -80,13 +89,13 @@ namespace Horde.Engine
 
             using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
             {
-                rtv = new RenderTargetView(device, resource);
+                rtv = new RenderTarget(resource);
             }
         }
 
         public void ClearRenderTarget(Color4 col)
         {
-            devContext.ClearRenderTargetView(rtv, col);
+            devContext.ClearRenderTargetView(rtv.View, col);
         }
 
         public void Present()
@@ -96,14 +105,20 @@ namespace Horde.Engine
 
         private void HandleResize(object sender, System.EventArgs e)
         {
-            rtv.Dispose();
-            swapChain.ResizeBuffers(1, 0, 0, Format.R8G8B8A8_UNorm, SwapChainFlags.AllowModeSwitch);
-            using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
+            Form f = (Form)sender;
+            if (f.Width != formWidth || f.Height != formHeight)
             {
-                rtv = new RenderTargetView(device, resource);
-            }
+                formWidth = f.Width;
+                formHeight = f.Height;
+                rtv.Dispose();
+                swapChain.ResizeBuffers(1, 0, 0, Format.R8G8B8A8_UNorm, SwapChainFlags.AllowModeSwitch);
+                using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
+                {
+                    rtv = new RenderTarget(resource);
+                }
 
-            devContext.OutputMerger.SetTargets(rtv);
+                devContext.OutputMerger.SetTargets(rtv.View);
+            }
         }
 
         private void HandleKeyDown(object sender, KeyEventArgs e)
