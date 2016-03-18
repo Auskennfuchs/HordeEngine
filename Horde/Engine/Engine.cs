@@ -51,10 +51,12 @@ namespace Horde.Engine
 
         public void Init(Form form)
         {
-            device = new Device(DriverType.Hardware, DeviceCreationFlags.None);
+            device = new Device(DriverType.Hardware, DeviceCreationFlags.Debug);
             devContext = device.ImmediateContext;
 
             swapChain = new SwapChain(form);
+
+            swapChain.Activate();
         }
 
         public void ClearRenderTarget(Color4 col)

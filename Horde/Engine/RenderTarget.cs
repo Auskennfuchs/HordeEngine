@@ -9,7 +9,12 @@ namespace Horde.Engine
         public RenderTargetView View
         {
             get { return rtv; }
-        }          
+        }
+
+        public Viewport Viewport
+        {
+            get; set;
+        }
 
         public RenderTarget(Resource res)
         {
@@ -20,6 +25,9 @@ namespace Horde.Engine
         {
             Dispose();
             rtv = new RenderTargetView(HordeEngine.Instance.Device, res);
+            if (res.GetType() == typeof(Texture2D)) {
+                Viewport = new Viewport(0, 0, ((Texture2D)res).Description.Width, ((Texture2D)res).Description.Height);
+            }
         }
 
         public void Dispose()
@@ -28,6 +36,13 @@ namespace Horde.Engine
             {
                 rtv.Dispose();
             }
+            Viewport = new Viewport();
+        }
+
+        public void Activate()
+        {
+            HordeEngine.Instance.DeviceContext.OutputMerger.SetTargets(rtv);
+            HordeEngine.Instance.DeviceContext.Rasterizer.SetViewports(Viewport);
         }
     }
 }

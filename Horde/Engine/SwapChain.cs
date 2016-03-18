@@ -18,6 +18,12 @@ namespace Horde.Engine
             get { return renderTarget; }
         }
 
+        public Viewport Viewport
+        {
+            get { return renderTarget.Viewport; }
+            set { renderTarget.Viewport = value; }
+        }
+
         private int formWidth, formHeight;
 
         public SwapChain(Form form)
@@ -44,6 +50,11 @@ namespace Horde.Engine
                 renderTarget = new RenderTarget(resource);
             }
 
+            using (var factory = swapChain.GetParent<Factory>())
+            {
+                factory.SetWindowAssociation(form.Handle, WindowAssociationFlags.IgnoreAltEnter);
+            }
+
             form.ResizeBegin += (o, e) =>
             {
                 formHeight = ((Form)o).Height;
@@ -59,11 +70,20 @@ namespace Horde.Engine
             {
                 renderTarget.Dispose();
             }
+            if (swapChain != null)
+            {
+                swapChain.Dispose();
+            }
         }
 
         public void Present()
         {
-            swapChain.Present(1, 0);
+            swapChain.Present(0, PresentFlags.None);
+        }
+
+        public void Activate()
+        {
+            renderTarget.Activate();
         }
 
         private void HandleResize(object sender, System.EventArgs e)
