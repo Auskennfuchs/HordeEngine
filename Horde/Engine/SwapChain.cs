@@ -8,7 +8,7 @@ using Resource = SlimDX.Direct3D11.Resource;
 
 namespace Horde.Engine
 {
-    public class SwapChain
+    public class SwapChain : IDisposable
     {
         private DXSwapChain swapChain;
 
@@ -24,12 +24,26 @@ namespace Horde.Engine
             set { renderTarget.Viewport = value; }
         }
 
-        private int formWidth, formHeight;
+        private int formWidth, formHeight, fullScreenWidth, fullScreenHeight;
+
+        private bool isResizing = false;
 
         public SwapChain(Form form)
+            :this(form,0,0)
+        { }
+
+        public SwapChain(Form form, int fullScreenWidth, int fullScreenHeight)
         {
-            formWidth = form.Width;
-            formHeight = form.Height;
+            if(fullScreenWidth==0 || fullScreenHeight ==0)
+            {
+                fullScreenWidth = SystemInformation.VirtualScreen.Width;
+                fullScreenHeight = SystemInformation.VirtualScreen.Height;
+            }
+            this.fullScreenWidth = fullScreenWidth;
+            this.fullScreenHeight = fullScreenHeight;
+
+            formWidth = form.ClientSize.Width;
+            formHeight = form.ClientSize.Height;
 
             var swapChainDescriptor = new SwapChainDescription()
             {
@@ -37,7 +51,7 @@ namespace Horde.Engine
                 Usage = Usage.RenderTargetOutput,
                 Flags = SwapChainFlags.AllowModeSwitch,
                 IsWindowed = true,
-                ModeDescription = new ModeDescription(form.Width, form.Height, new Rational(0, 1), Format.R8G8B8A8_UNorm),
+                ModeDescription = new ModeDescription(form.ClientSize.Width, form.ClientSize.Height, new Rational(0, 1), Format.R8G8B8A8_UNorm),
                 OutputHandle = form.Handle,
                 SampleDescription = new SampleDescription(1, 0),
                 SwapEffect = SwapEffect.Discard
@@ -60,8 +74,18 @@ namespace Horde.Engine
                 formHeight = ((Form)o).Height;
                 formWidth = ((Form)o).Width;
             };
-            form.ResizeEnd += HandleResize;
+            form.ResizeBegin += (o, e) =>
+            {
+                isResizing = true;
+            };
+            form.ResizeEnd += (o, e)=>
+            {
+                isResizing = false;
+                HandleResize(o, e);
+            };
             form.KeyDown += HandleKeyDown;
+
+            form.SizeChanged += HandleResize;
         }
 
         public void Dispose()
@@ -89,18 +113,14 @@ namespace Horde.Engine
         private void HandleResize(object sender, System.EventArgs e)
         {
             Form f = (Form)sender;
-            if (f.Width != formWidth || f.Height != formHeight)
+            if ((f.Width != formWidth || f.Height != formHeight) 
+                && !isResizing 
+                && !(f.WindowState == FormWindowState.Minimized))
             {
-                formWidth = f.Width;
-                formHeight = f.Height;
-                renderTarget.Dispose();
-                swapChain.ResizeBuffers(1, 0, 0, Format.R8G8B8A8_UNorm, SwapChainFlags.AllowModeSwitch);
-                using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
-                {
-                    renderTarget = new RenderTarget(resource);
-                }
+                formWidth = f.ClientSize.Width;
+                formHeight = f.ClientSize.Height;
 
-                HordeEngine.Instance.DeviceContext.OutputMerger.SetTargets(renderTarget.View);
+                Resize(formWidth, formHeight);
             }
         }
 
@@ -108,8 +128,27 @@ namespace Horde.Engine
         {
             if (e.Alt && e.KeyCode == Keys.Enter)
             {
+                if(!swapChain.IsFullScreen)
+                {
+                    Resize(fullScreenWidth, fullScreenHeight);
+                }
+                else
+                {
+                    Resize(formWidth, formHeight);
+                }
                 swapChain.IsFullScreen = !swapChain.IsFullScreen;
             }
+        }
+
+        private void Resize(int width, int height)
+        {
+            renderTarget.Dispose();
+            swapChain.ResizeBuffers(1, width, height, Format.R8G8B8A8_UNorm, SwapChainFlags.AllowModeSwitch);
+            using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
+            {
+                renderTarget = new RenderTarget(resource);
+            }
+            renderTarget.Activate();
         }
     }
 }

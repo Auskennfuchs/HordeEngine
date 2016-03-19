@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Horde
+namespace Horde.Engine
 {
     class HordeException : Exception
     {
@@ -24,7 +24,7 @@ namespace Horde
             [CallerFilePath] string file="")
         {
             file = file.Substring(file.LastIndexOf("\\")+1);
-            return new HordeException(message + "\n"+file + "(" + lineNumber + "):" + methodName, baseException);
+            return new HordeException(message + "\n"+file + "(" + lineNumber + "):" + methodName+"\n"+baseException.Message, baseException);
 
         }
         public static HordeException Create(string message,

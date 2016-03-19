@@ -29,6 +29,8 @@ namespace Horde
         VertexShader vertexShader;
         PixelShader pixelShader;
         Buffer vertexBuffer;
+        int vertexSize;
+        InputLayout layout;
 
 
         public MainWindow(string windowName) : 
@@ -36,7 +38,7 @@ namespace Horde
         {
             InitializeComponent();
             this.Text = windowName;
-            this.Width = 1024;
+            this.Width = 1224;
             this.Height = 768;
 
             engine = new HordeEngine();
@@ -67,7 +69,7 @@ namespace Horde
                 throw HordeException.Create("Error loading PixelShader", exc);
             }
 
-            var vertexSize = sizeof(float) * 3 * 3;
+            vertexSize = sizeof(float) * 3 * 3;
             var vertices = new DataStream(vertexSize, true, true);
             vertices.Write(new Vector3(0.0f, 0.5f, 0.5f));
             vertices.Write(new Vector3(0.5f, -0.5f, 0.5f));
@@ -75,22 +77,24 @@ namespace Horde
             vertices.Position = 0;
 
             var elements = new[] { new InputElement("POSITION", 0, Format.R32G32B32_Float, 0) };
-            var layout = new InputLayout(engine.Device, inputSignature, elements);
+            layout = new InputLayout(engine.Device, inputSignature, elements);
             vertexBuffer = new Buffer(engine.Device, vertices, vertexSize, ResourceUsage.Default, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             vertices.Close();
 
             engine.DeviceContext.InputAssembler.InputLayout = layout;
-            engine.DeviceContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, vertexSize, 0));
+            engine.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            engine.DeviceContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, vertexSize/3, 0));
             engine.DeviceContext.VertexShader.Set(vertexShader);
             engine.DeviceContext.PixelShader.Set(pixelShader);
-
         }
 
         public new void Close()
         {
+            layout.Dispose();
             vertexBuffer.Dispose();
             pixelShader.Dispose();
             vertexShader.Dispose();
+
             engine.Dispose();
             base.Close();
         }

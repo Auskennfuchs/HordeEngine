@@ -2,6 +2,10 @@
 using SlimDX.Windows;
 using System.Windows.Forms;
 
+using Horde.Engine;
+
+using System.IO;
+
 namespace Horde
 {
     static class Program
@@ -18,9 +22,9 @@ namespace Horde
                 MessagePump.Run(form, form.MainLoop);
                 form.Close();
             }
-            catch (HordeException exc)
+            catch (Exception exc)
             {
-                MessageBox.Show(exc.Message,"Fatal",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message, "Fatal", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

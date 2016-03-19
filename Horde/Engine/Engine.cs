@@ -9,7 +9,7 @@ using ResultCode = SlimDX.Direct3D11.ResultCode;
 
 namespace Horde.Engine
 {
-    public class HordeEngine
+    public class HordeEngine : IDisposable
     {
         private Device device;
         public Device Device
@@ -52,6 +52,7 @@ namespace Horde.Engine
         public void Init(Form form)
         {
             device = new Device(DriverType.Hardware, DeviceCreationFlags.Debug);
+
             devContext = device.ImmediateContext;
 
             swapChain = new SwapChain(form);

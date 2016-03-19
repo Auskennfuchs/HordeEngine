@@ -1,8 +1,9 @@
-﻿using SlimDX.Direct3D11;
+﻿using System;
+using SlimDX.Direct3D11;
 
 namespace Horde.Engine
 {
-    public class RenderTarget
+    public class RenderTarget : IDisposable
     {
         private RenderTargetView rtv;
 
