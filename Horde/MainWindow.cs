@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SlimDX;
 using SlimDX.DXGI;
 using SlimDX.Direct3D11;
-using SlimDX.Windows;
-using Device = SlimDX.Direct3D11.Device;
-using Resource = SlimDX.Direct3D11.Resource;
-using ResultCode = SlimDX.Direct3D11.ResultCode;
 using Buffer = SlimDX.Direct3D11.Buffer;
 using Horde.Engine;
 using System.Windows.Forms;
@@ -91,6 +80,7 @@ namespace Horde
         public new void Close()
         {
             layout.Dispose();
+            inputSignature.Dispose();
             vertexBuffer.Dispose();
             pixelShader.Dispose();
             vertexShader.Dispose();
