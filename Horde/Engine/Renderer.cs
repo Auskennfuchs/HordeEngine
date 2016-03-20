@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SlimDX.Direct3D11;
 
 using Horde.Engine.Task;
@@ -42,7 +38,6 @@ namespace Horde.Engine {
 
         private RenderPipeline[] pipelines;
         private CommandList[] commandLists;
-        private Object[] lockObjects;
         private SceneRenderTaskPayLoad[] payloads;
 
         private int numCores;
@@ -52,17 +47,15 @@ namespace Horde.Engine {
         public Renderer() {
             instance = this;
 
-            numCores = Environment.ProcessorCount;
+            numCores = Environment.ProcessorCount-1;
 
             device = new Device(DriverType.Hardware, DeviceCreationFlags.Debug);
             immContext = device.ImmediateContext;
 
             pipelines = new RenderPipeline[numCores];
-            lockObjects = new Object[numCores];
             payloads = new SceneRenderTaskPayLoad[numCores];
-            for (int i = 0; i < Environment.ProcessorCount; i++) {
+            for (int i = 0; i < numCores; i++) {
                 pipelines[i] = new RenderPipeline();
-                lockObjects[i] = new Object();
                 payloads[i] = new SceneRenderTaskPayLoad();
             }
             commandLists = new CommandList[numCores];
@@ -96,6 +89,8 @@ namespace Horde.Engine {
                 }
 
                 WaitAllTasks();
+
+                //CommandLists auf Immediate-Context abbilden
                 for (int k = 0; count > 0; count--, k++) {
                     immContext.ExecuteCommandList(commandLists[k], false);
                     commandLists[k].Dispose();

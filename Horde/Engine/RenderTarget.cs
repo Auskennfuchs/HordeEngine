@@ -21,7 +21,7 @@ namespace Horde.Engine {
             Dispose();
             rtv = new RenderTargetView(Renderer.Instance.Device, res);
             if (res.GetType() == typeof(Texture2D)) {
-                Viewport = new Viewport(0, 0, ((Texture2D)res).Description.Width, ((Texture2D)res).Description.Height);
+                SetViewport(0, 0, ((Texture2D)res).Description.Width, ((Texture2D)res).Description.Height);
             }
         }
 
@@ -39,6 +39,10 @@ namespace Horde.Engine {
 
         public void Resize(int width, int height, Resource src) {
             ReCreate(src);
+        }
+
+        public void SetViewport(float x, float y, float width, float height) {
+            Viewport = new Viewport(x, y, width, height);
         }
     }
 }

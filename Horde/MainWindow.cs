@@ -1,14 +1,8 @@
-﻿using System;
-using SlimDX;
-using SlimDX.DXGI;
-using SlimDX.Direct3D11;
-using Buffer = SlimDX.Direct3D11.Buffer;
-using Horde.Engine;
+﻿using Horde.Engine;
 using System.Windows.Forms;
 using SwapChain = Horde.Engine.SwapChain;
 
-namespace Horde
-{
+namespace Horde {
     public class MainWindow : Form
     {
 

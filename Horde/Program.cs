@@ -2,12 +2,7 @@
 using SlimDX.Windows;
 using System.Windows.Forms;
 
-using Horde.Engine;
-
-using System.IO;
-
-namespace Horde
-{
+namespace Horde {
     static class Program
     {
         /// <summary>

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Horde.Engine;
 using Horde.Engine.Task;
 using SlimDX.Direct3D11;
@@ -10,8 +6,6 @@ using SlimDX.D3DCompiler;
 using SlimDX;
 using SlimDX.DXGI;
 using Buffer = SlimDX.Direct3D11.Buffer;
-using System.Windows.Forms;
-using System.IO;
 
 namespace Horde {
     class SceneRenderTest : SceneRenderTask, IDisposable {
