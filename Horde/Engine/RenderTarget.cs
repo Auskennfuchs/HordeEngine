@@ -25,7 +25,7 @@ namespace Horde.Engine
         public void ReCreate(Resource res)
         {
             Dispose();
-            rtv = new RenderTargetView(HordeEngine.Instance.Device, res);
+            rtv = new RenderTargetView(Renderer.Instance.Device, res);
             if (res.GetType() == typeof(Texture2D)) {
                 Viewport = new Viewport(0, 0, ((Texture2D)res).Description.Width, ((Texture2D)res).Description.Height);
             }
@@ -40,10 +40,10 @@ namespace Horde.Engine
             Viewport = new Viewport();
         }
 
-        public void Activate()
+        public void Activate(RenderPipeline pipeline)
         {
-            HordeEngine.Instance.DeviceContext.OutputMerger.SetTargets(rtv);
-            HordeEngine.Instance.DeviceContext.Rasterizer.SetViewports(Viewport);
+            pipeline.DeviceContext.OutputMerger.SetTargets(rtv);
+            pipeline.DeviceContext.Rasterizer.SetViewports(Viewport);
         }
     }
 }

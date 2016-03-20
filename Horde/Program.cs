@@ -24,7 +24,7 @@ namespace Horde
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "Fatal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.Message+"\n"+exc.StackTrace, "Fatal", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

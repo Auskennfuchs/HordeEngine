@@ -11,17 +11,7 @@ namespace Horde.Engine
 {
     public class HordeEngine : IDisposable
     {
-        private Device device;
-        public Device Device
-        {
-            get { return device; }
-        }
-        private SwapChain swapChain;
-        private DeviceContext devContext;
-        public DeviceContext DeviceContext
-        {
-            get { return devContext; }
-        }
+        #region Members
 
         private static HordeEngine instance;
 
@@ -32,6 +22,10 @@ namespace Horde.Engine
             }
         }
 
+        private Renderer renderer;
+
+        #endregion Members
+
         public HordeEngine()
         {
             instance = this;
@@ -39,36 +33,12 @@ namespace Horde.Engine
 
         public void Dispose()
         {
-            if (swapChain != null)
-            {
-                swapChain.Dispose();
-            }
-            if (device != null)
-            {
-                device.Dispose();
-            }
+            renderer.Dispose();
         }
 
         public void Init(Form form)
         {
-            device = new Device(DriverType.Hardware, DeviceCreationFlags.Debug);
-
-            devContext = device.ImmediateContext;
-
-            swapChain = new SwapChain(form);
-
-            swapChain.Activate();
+            renderer = new Renderer();
         }
-
-        public void ClearRenderTarget(Color4 col)
-        {
-            devContext.ClearRenderTargetView(swapChain.RenderTarget.View, col);
-        }
-
-        public void Present()
-        {
-            swapChain.Present();
-        }
-
     }
 }

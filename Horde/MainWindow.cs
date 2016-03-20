@@ -5,7 +5,7 @@ using SlimDX.Direct3D11;
 using Buffer = SlimDX.Direct3D11.Buffer;
 using Horde.Engine;
 using System.Windows.Forms;
-using SlimDX.D3DCompiler;
+using SwapChain = Horde.Engine.SwapChain;
 
 namespace Horde
 {
@@ -14,88 +14,42 @@ namespace Horde
 
         private HordeEngine engine;
 
-        ShaderSignature inputSignature;
-        VertexShader vertexShader;
-        PixelShader pixelShader;
-        Buffer vertexBuffer;
-        int vertexSize;
-        InputLayout layout;
+        private SceneRenderTest sceneRender;
 
+        private SwapChain swapChain;
 
         public MainWindow(string windowName) : 
             base()
         {
             InitializeComponent();
             this.Text = windowName;
-            this.Width = 1224;
+            this.Width = 1024;
             this.Height = 768;
 
             engine = new HordeEngine();
             engine.Init(this);
 
-            try
-            {
-                using (var bytecode = ShaderBytecode.CompileFromFile("simple.fx", "VShader", "vs_4_0", ShaderFlags.None, EffectFlags.None))
-                {
-                    inputSignature = ShaderSignature.GetInputSignature(bytecode);
-                    vertexShader = new VertexShader(engine.Device, bytecode);
-                }
-            }
-            catch (Exception exc)
-            {
-                throw HordeException.Create("Error loading VertexShader",exc);
-            }
+            swapChain = new SwapChain(this);
 
-            try
-            {
-                using (var bytecode = ShaderBytecode.CompileFromFile("simple.fx", "PShader", "ps_4_0", ShaderFlags.None, EffectFlags.None))
-                {
-                    pixelShader = new PixelShader(engine.Device, bytecode);
-                }
-            }
-            catch (Exception exc)
-            {
-                throw HordeException.Create("Error loading PixelShader", exc);
-            }
-
-            vertexSize = sizeof(float) * 3 * 3;
-            var vertices = new DataStream(vertexSize, true, true);
-            vertices.Write(new Vector3(0.0f, 0.5f, 0.5f));
-            vertices.Write(new Vector3(0.5f, -0.5f, 0.5f));
-            vertices.Write(new Vector3(-0.5f, -0.5f, 0.5f));
-            vertices.Position = 0;
-
-            var elements = new[] { new InputElement("POSITION", 0, Format.R32G32B32_Float, 0) };
-            layout = new InputLayout(engine.Device, inputSignature, elements);
-            vertexBuffer = new Buffer(engine.Device, vertices, vertexSize, ResourceUsage.Default, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-            vertices.Close();
-
-            engine.DeviceContext.InputAssembler.InputLayout = layout;
-            engine.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            engine.DeviceContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, vertexSize/3, 0));
-            engine.DeviceContext.VertexShader.Set(vertexShader);
-            engine.DeviceContext.PixelShader.Set(pixelShader);
+            sceneRender = new SceneRenderTest(swapChain.RenderTarget);
+            sceneRender.Init();
         }
 
         public new void Close()
         {
-            layout.Dispose();
-            inputSignature.Dispose();
-            vertexBuffer.Dispose();
-            pixelShader.Dispose();
-            vertexShader.Dispose();
-
+            sceneRender.Dispose();
+            if (swapChain != null) {
+                swapChain.Dispose();
+            }
             engine.Dispose();
             base.Close();
         }
 
         public void MainLoop()
         {
-            engine.ClearRenderTarget(new Color4(0, 0, 1.0f));
-
-            engine.DeviceContext.Draw(3, 0);
-
-            engine.Present();
+            Horde.Engine.Renderer.Instance.QueueTask(sceneRender);
+            Horde.Engine.Renderer.Instance.ProcessTasks();
+            swapChain.Present();
         }
 
         private void InitializeComponent()

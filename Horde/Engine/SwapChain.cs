@@ -57,7 +57,7 @@ namespace Horde.Engine
                 SwapEffect = SwapEffect.Discard
             };
 
-            swapChain = new DXSwapChain(HordeEngine.Instance.Device.Factory, HordeEngine.Instance.Device, swapChainDescriptor);
+            swapChain = new DXSwapChain(Renderer.Instance.Device.Factory, Renderer.Instance.Device, swapChainDescriptor);
 
             using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
             {
@@ -105,11 +105,6 @@ namespace Horde.Engine
             swapChain.Present(0, PresentFlags.None);
         }
 
-        public void Activate()
-        {
-            renderTarget.Activate();
-        }
-
         private void HandleResize(object sender, System.EventArgs e)
         {
             Form f = (Form)sender;
@@ -144,11 +139,11 @@ namespace Horde.Engine
         {
             renderTarget.Dispose();
             swapChain.ResizeBuffers(1, width, height, Format.R8G8B8A8_UNorm, SwapChainFlags.AllowModeSwitch);
-            using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
+/*            using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
             {
                 renderTarget = new RenderTarget(resource);
             }
-            renderTarget.Activate();
+            renderTarget.Activate();*/
         }
     }
 }
