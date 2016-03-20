@@ -139,11 +139,10 @@ namespace Horde.Engine
         {
             renderTarget.Dispose();
             swapChain.ResizeBuffers(1, width, height, Format.R8G8B8A8_UNorm, SwapChainFlags.AllowModeSwitch);
-/*            using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
+            using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
             {
-                renderTarget = new RenderTarget(resource);
+                renderTarget.Resize(width, height, resource);
             }
-            renderTarget.Activate();*/
         }
     }
 }
