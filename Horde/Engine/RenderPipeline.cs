@@ -10,6 +10,7 @@ using SlimDX;
 namespace Horde.Engine {
     public class RenderPipeline : IDisposable {
 
+        #region Members
         private DeviceContext devContext;
 
         public DeviceContext DeviceContext {
@@ -18,8 +19,18 @@ namespace Horde.Engine {
             }
         }
 
+        private OutputMergerStage outputMergerStage;
+
+        public OutputMergerStage OutputMergerStage {
+            get { return outputMergerStage; }
+        }
+
+        #endregion Members 
+
         public RenderPipeline() {
             devContext = new DeviceContext(Renderer.Instance.Device);
+
+            outputMergerStage = new OutputMergerStage();
         }
 
         public void Dispose() {
@@ -42,6 +53,10 @@ namespace Horde.Engine {
 
         public void ClearRenderTarget(RenderTarget renderTarget, Color4 col) {
             devContext.ClearRenderTargetView(renderTarget.View, col);
+        }
+
+        public void ApplyRenderTargets() {
+            outputMergerStage.ApplyRenderTargets(devContext);
         }
     }
 }

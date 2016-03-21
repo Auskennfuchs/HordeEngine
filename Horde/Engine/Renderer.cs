@@ -74,7 +74,7 @@ namespace Horde.Engine {
             for (int i = QueuedTasks.Count-1; i >= 0 ; i -= numCores) {
                 int count = 0;
                 for (int j = 0; j < numCores; j++) {
-                    if (i - j >= 0) { //noch ein Task in der Queue
+                    if (i - j >= 0) { //noch ein Task in der Queue?
                         count++;
                         payloads[j].task = (SceneRenderTask)QueuedTasks[i - j];
                         payloads[j].pipeline = pipelines[j];

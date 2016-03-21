@@ -107,10 +107,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine\BufferLayout.cs" />
+    <Compile Include="Engine\Camera.cs" />
+    <Compile Include="Engine\Constants.cs" />
     <Compile Include="Engine\Engine.cs" />
     <Compile Include="Engine\HordeException.cs" />
+    <Compile Include="Engine\OutputMergerStage.cs" />
     <Compile Include="Engine\Renderer.cs" />
     <Compile Include="Engine\RenderPipeline.cs" />
+    <Compile Include="Engine\Shader\PixelShader.cs" />
+    <Compile Include="Engine\Shader\ShaderBase.cs" />
+    <Compile Include="Engine\Shader\VertexShader.cs" />
     <Compile Include="Engine\SwapChain.cs" />
     <Compile Include="Engine\Task\HordeTask.cs" />
     <Compile Include="Engine\Task\SceneRenderTask.cs" />

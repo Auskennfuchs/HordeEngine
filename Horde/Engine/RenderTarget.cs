@@ -33,7 +33,7 @@ namespace Horde.Engine {
         }
 
         public void Activate(RenderPipeline pipeline) {
-            pipeline.DeviceContext.OutputMerger.SetTargets(rtv);
+//            pipeline.DeviceContext.OutputMerger.SetTargets(rtv);
             pipeline.DeviceContext.Rasterizer.SetViewports(Viewport);
         }
 
