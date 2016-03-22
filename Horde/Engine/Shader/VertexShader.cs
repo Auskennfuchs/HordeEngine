@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
+using SlimDX;
 
 using VShader = SlimDX.Direct3D11.VertexShader;
+using Buffer = SlimDX.Direct3D11.Buffer;
 
 namespace Horde.Engine.Shader {
-    public class VertexShader : ShaderBase {
+    public class VertexShader : ShaderBase {        
         private VShader vertexShader;        
         public VShader VertexShaderPtr {
             get { return vertexShader; }
@@ -19,11 +21,7 @@ namespace Horde.Engine.Shader {
                 using (var bytecode = ShaderBytecode.CompileFromFile(file, entryfunction, "vs_5_0", ShaderFlags.None, EffectFlags.None)) {
                     inputSignature = ShaderSignature.GetInputSignature(bytecode);
                     vertexShader = new VShader(Renderer.Instance.Device, bytecode);
-                    ShaderReflection reflection = new ShaderReflection(bytecode);
-                    for(int cBufferIndex=0; cBufferIndex<reflection.Description.ConstantBuffers;cBufferIndex++) {
-                        ConstantBuffer cb = reflection.GetConstantBuffer(cBufferIndex);
-//                        cb.Description.Variables
-                    }
+                    ReflectBytecode(bytecode);
                 }
             }
             catch (Exception exc) {
@@ -40,6 +38,10 @@ namespace Horde.Engine.Shader {
 
         public override void Apply(DeviceContext context) {
             context.VertexShader.Set(vertexShader);
+            for(int i=0;i<constantBuffers.Count;i++) {
+                constantBuffers[i].UpdateBuffer(context);
+                context.VertexShader.SetConstantBuffer(constantBuffers[i].Buffer, i);
+            }
         }
     }
 }

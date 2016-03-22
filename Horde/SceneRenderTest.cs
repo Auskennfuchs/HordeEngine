@@ -37,6 +37,8 @@ namespace Horde {
             layout = new InputLayout(Renderer.Instance.Device, vertexShader.InputSignature, elements);
             vertexBuffer = new Buffer(Renderer.Instance.Device, vertices, vertexSize, ResourceUsage.Default, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             vertices.Close();
+
+            vertexShader.SetParameterMatrix("viewMatrix", Matrix.Identity);
         }
 
         public override void Execute(RenderPipeline pipeline) {
