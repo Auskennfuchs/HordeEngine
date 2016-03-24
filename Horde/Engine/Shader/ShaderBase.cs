@@ -38,7 +38,7 @@ namespace Horde.Engine.Shader {
             using (var reflection = new ShaderReflection(bytecode)) {
                 for (int cBufferIndex = 0; cBufferIndex < reflection.Description.ConstantBuffers; cBufferIndex++) {
                     CBuffer cb = reflection.GetConstantBuffer(cBufferIndex);
-                    Buffer buf = new Buffer(Renderer.Instance.Device, cb.Description.Size, ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0);
+                    Buffer buf = new Buffer(Renderer.Instance.Device, cb.Description.Size, ResourceUsage.Dynamic, BindFlags.ConstantBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, sizeof(float));
                     ConstantBuffer constantBuffer = new ConstantBuffer(buf);
                     for (int i = 0; i < cb.Description.Variables; i++) {
                         var refVar = cb.GetVariable(i);
@@ -46,11 +46,11 @@ namespace Horde.Engine.Shader {
                         switch (type.Description.Type) {
                             case ShaderVariableType.Float:
                                 if (type.Description.Rows == 4 && type.Description.Columns == 4) {
-                                    var cbp = new ConstantBufferParameter<Matrix>(refVar.Description.Name, refVar.Description.StartOffset);
-                                    if (cbp.Size != refVar.Description.Size) {
+                                    var matParam = new MatrixParameter();
+                                    if (matParam.GetSize() != refVar.Description.Size) {
                                         throw HordeException.Create("Error ConstantBufferParamtersize");
                                     }
-                                    constantBuffer.AddParameter(cbp);
+                                    constantBuffer.AddParameter(refVar.Description.Name, refVar.Description.StartOffset, matParam);
                                 }
                                 break;
                         }

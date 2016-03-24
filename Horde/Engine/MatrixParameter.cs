@@ -1,29 +1,51 @@
 ﻿using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using SlimDX;
 
-namespace Horde.Engine {
-/*    class MatrixParameter : ConstantBufferParameter<Matrix> {
+namespace Horde.Engine
+{
+    class MatrixParameter : IConstantBufferParameter {
 
-        private byte[] bytes;
+        private Matrix val;
 
-        public MatrixParameter(string name, int offset) {
-            base();
+        public Matrix Value {
+            get {
+                return val;
+            }
+            set {
+                val = value;
+                UpdateBuffer();
+            }
+        }
 
-       }
+        private static int SIZE = sizeof(float) * 4 * 4;
 
-        protected override int GetSize() {
-            return sizeof(float) * 4 * 4;
+        private byte[] buffer = new byte[SIZE];
+
+        public MatrixParameter() {
         }
 
         public byte[] GetBytes() {
-            int len = Marshal.SizeOf(Value);
-            byte[] arr = new byte[len];
-            IntPtr ptr = Marshal.AllocHGlobal(len);
-            Marshal.StructureToPtr(Value, ptr, true);
-            Marshal.Copy(ptr, arr, 0, len);
-            Marshal.FreeHGlobal(ptr);
-            return arr;
+            return buffer;
         }
-    }*/
+
+        public int GetSize() {
+            return SIZE;
+        }
+
+        public void SetValue(object obj) {
+            Value = (Matrix)obj;
+        }
+
+        private void UpdateBuffer() {
+            Buffer.BlockCopy(val.ToArray(), 0, buffer, 0, SIZE);
+        }
+
+        public object GetValue() {
+            return Value;
+        }
+    }
 }
