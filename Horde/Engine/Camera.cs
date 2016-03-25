@@ -5,27 +5,69 @@ using System.Text;
 using System.Threading.Tasks;
 using SlimDX;
 using Horde.Engine.Task;
+using Horde.Engine.Events;
 
 namespace Horde.Engine {
-    public class Camera {
+    public class Camera : EventListener {
         protected Matrix projMatrix;
 
         public Matrix ProjectionMatrix {
             get { return projMatrix; }
         }
 
+        protected Vector3 pos;
+        public Vector3 Position {
+            get {
+                return pos;
+            }
+            set {
+                pos = value;
+                needUpdate = true;
+            }
+        }
+        protected Matrix viewMatrix;
+        private bool needUpdate = false;
+
+        public Matrix ViewMatrix {
+            get {
+                if(needUpdate) {
+                    UpdateCamMatrices();
+                }
+                return viewMatrix;
+            }
+        }
+
         public SceneRenderTask SceneRenderTask {
             get; set;
+        }
+
+        public Camera() {
+            viewMatrix = Matrix.Identity;
+            projMatrix = Matrix.Identity;
+            SceneRenderTask = null;
         }
 
         public void SetProjection(float zNear, float zFar, float aspect, float fov) {
             projMatrix = Matrix.PerspectiveFovLH(fov, aspect, zNear, zFar);
         }
 
-        public void ApplyProjectionParams() {
-/*            if(SceneRenderTask) {
-                SceneRenderTask-
-            }*/
+        private void UpdateCamMatrices() {
+            if(needUpdate) {
+                needUpdate = false;
+                viewMatrix = Matrix.Identity;
+                viewMatrix = Matrix.Translation(pos);
+            }
+        }
+
+        public void RenderFrame(Renderer renderer) {
+            if(SceneRenderTask!=null) {
+                renderer.QueueTask(SceneRenderTask);
+            }
+            renderer.ProcessTasks();
+        }
+
+        public override bool HandleEvent(IEvent ev) {
+            throw new NotImplementedException();
         }
     }
 }

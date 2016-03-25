@@ -1,6 +1,8 @@
 ﻿using Horde.Engine;
 using System.Windows.Forms;
 using SwapChain = Horde.Engine.SwapChain;
+using Horde.Engine.Events;
+using SlimDX;
 
 namespace Horde {
     public class MainWindow : Form
@@ -12,6 +14,10 @@ namespace Horde {
 
         private SwapChain swapChain;
 
+        private EventManager eventManager;
+
+        private FirstPersonCamera cam;
+
         public MainWindow(string windowName) : 
             base()
         {
@@ -20,6 +26,25 @@ namespace Horde {
             this.Width = 1024;
             this.Height = 768;
 
+            eventManager = new EventManager();
+
+            this.KeyDown += (o, e) => {
+                eventManager.ProcessEvent(new EventKeyDown(new SKeyEvent() {
+                    keyCode = e.KeyCode,
+                    alt = e.Alt,
+                    control = e.Control,
+                    shift = e.Shift
+                }));
+            };
+            this.KeyUp += (o, e) => {
+                eventManager.ProcessEvent(new EventKeyUp(new SKeyEvent() {
+                    keyCode = e.KeyCode,
+                    alt = e.Alt,
+                    control = e.Control,
+                    shift = e.Shift
+                }));
+            };
+
             engine = new HordeEngine();
             engine.Init(this);
 
@@ -27,6 +52,16 @@ namespace Horde {
 
             sceneRender = new SceneRenderTest(swapChain.RenderTarget);
             sceneRender.Init();
+
+            cam = new FirstPersonCamera();
+            cam.EventManager = eventManager;
+            cam.SetProjection(0.1f, 1000.0f, (float)ClientSize.Width / (float)ClientSize.Height, 3.14159265f / 2.0f);
+
+            cam.Position = new Vector3(0.0f, 0.0f, 0.0f);
+            cam.SceneRenderTask = sceneRender;
+
+            sceneRender.cam = cam;
+
         }
 
         public new void Close()
@@ -41,6 +76,8 @@ namespace Horde {
 
         public void MainLoop()
         {
+            eventManager.ProcessEvent(new EventFrameStart());
+            cam.RenderFrame(Renderer.Instance);
             Horde.Engine.Renderer.Instance.QueueTask(sceneRender);
             Horde.Engine.Renderer.Instance.ProcessTasks();
             swapChain.Present();

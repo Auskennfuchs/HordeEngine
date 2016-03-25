@@ -7,11 +7,19 @@ using System.Threading.Tasks;
 
 namespace Horde.Engine {
 
+    public enum ConstantBufferParameterType {
+        MATRIX,
+        VECTOR3,
+        VECTOR4,
+        NUM_ELEM
+    }
+
     public interface IConstantBufferParameter {
         int GetSize();
         byte[] GetBytes();
         void SetValue(object obj);
         object GetValue();
+        ConstantBufferParameterType GetType();
     }
 
     public class ConstantBufferParameter {

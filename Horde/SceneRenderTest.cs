@@ -17,6 +17,7 @@ namespace Horde {
         int vertexSize;
         InputLayout layout;
         RenderTarget backBuffer;
+        public Camera cam;
 
         public SceneRenderTest(RenderTarget backBuffer) {
             this.backBuffer = backBuffer;              
@@ -28,20 +29,21 @@ namespace Horde {
 
             vertexSize = sizeof(float) * 3 * 3;
             var vertices = new DataStream(vertexSize, true, true);
-            vertices.Write(new Vector3(0.0f, 0.5f, 0.5f));
-            vertices.Write(new Vector3(0.5f, -0.5f, 0.5f));
-            vertices.Write(new Vector3(-0.5f, -0.5f, 0.5f));
+            vertices.Write(new Vector3(0.0f, 0.5f, 1.0f));
+            vertices.Write(new Vector3(0.5f, -0.5f, 1.0f));
+            vertices.Write(new Vector3(-0.5f, -0.5f, 1.0f));
             vertices.Position = 0;
 
             var elements = new[] { new InputElement("POSITION", 0, Format.R32G32B32_Float, 0) };
             layout = new InputLayout(Renderer.Instance.Device, vertexShader.InputSignature, elements);
             vertexBuffer = new Buffer(Renderer.Instance.Device, vertices, vertexSize, ResourceUsage.Default, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             vertices.Close();
-
-            vertexShader.SetParameterMatrix("viewMatrix", Matrix.Identity);
         }
 
         public override void Execute(RenderPipeline pipeline) {
+            vertexShader.SetParameterMatrix("projMatrix", Matrix.Transpose(cam.ProjectionMatrix));
+            vertexShader.SetParameterMatrix("viewMatrix", Matrix.Transpose(cam.ViewMatrix));
+
             pipeline.DeviceContext.InputAssembler.InputLayout = layout;
             pipeline.DeviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             pipeline.DeviceContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, vertexSize / 3, 0));

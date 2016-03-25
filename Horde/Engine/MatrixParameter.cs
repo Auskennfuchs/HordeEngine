@@ -9,14 +9,14 @@ namespace Horde.Engine
 {
     class MatrixParameter : IConstantBufferParameter {
 
-        private Matrix val;
+        private Matrix mat;
 
         public Matrix Value {
             get {
-                return val;
+                return mat;
             }
             set {
-                val = value;
+                mat = value;
                 UpdateBuffer();
             }
         }
@@ -26,6 +26,10 @@ namespace Horde.Engine
         private byte[] buffer = new byte[SIZE];
 
         public MatrixParameter() {
+        }
+
+        public MatrixParameter(Matrix mat) {
+            this.mat = mat;
         }
 
         public byte[] GetBytes() {
@@ -41,11 +45,15 @@ namespace Horde.Engine
         }
 
         private void UpdateBuffer() {
-            Buffer.BlockCopy(val.ToArray(), 0, buffer, 0, SIZE);
+            Buffer.BlockCopy(mat.ToArray(), 0, buffer, 0, SIZE);
         }
 
         public object GetValue() {
             return Value;
+        }
+
+        ConstantBufferParameterType IConstantBufferParameter.GetType() {
+            return ConstantBufferParameterType.MATRIX;
         }
     }
 }
