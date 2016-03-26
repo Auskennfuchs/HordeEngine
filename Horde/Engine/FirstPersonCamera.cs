@@ -21,6 +21,10 @@ namespace Horde.Engine {
 
         private bool[] keyPressed = new bool[(int)ControlKeys.NUM_KEYS];
 
+        public float Speed {
+            get; set;
+        }
+
 
         public FirstPersonCamera() {
             RegisterEvent(EventType.KEYDOWN);
@@ -28,6 +32,7 @@ namespace Horde.Engine {
             RegisterEvent(EventType.FRAME_START);
             timer = new Timer();
             timer.Start();
+            Speed = 1.0f;
         }
 
         public override bool HandleEvent(IEvent ev) {
@@ -79,16 +84,16 @@ namespace Horde.Engine {
         private void Update() {
             float elapsed = timer.Restart();
             if(keyPressed[(int)ControlKeys.RIGHT]) {
-                Position -= new Vector3(0.1f, 0, 0)*elapsed;
+                Position -= new Vector3(Speed, 0, 0)*elapsed;
             }
             if (keyPressed[(int)ControlKeys.LEFT]) {
-                Position += new Vector3(0.1f, 0, 0) * elapsed;
+                Position += new Vector3(Speed, 0, 0) * elapsed;
             }
             if (keyPressed[(int)ControlKeys.FORWARD]) {
-                Position -= new Vector3(0, 0, 0.1f) * elapsed;
+                Position -= new Vector3(0, 0, Speed) * elapsed;
             }
             if (keyPressed[(int)ControlKeys.BACKWARD]) {
-                Position += new Vector3(0, 0, 0.1f) * elapsed;
+                Position += new Vector3(0, 0, Speed) * elapsed;
             }
         }
 

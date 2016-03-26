@@ -26,6 +26,8 @@ namespace Horde {
             this.Width = 1024;
             this.Height = 768;
 
+            this.ClientSize = new System.Drawing.Size(this.Width,this.Height);
+            
             eventManager = new EventManager();
 
             this.KeyDown += (o, e) => {
@@ -55,9 +57,9 @@ namespace Horde {
 
             cam = new FirstPersonCamera();
             cam.EventManager = eventManager;
-            cam.SetProjection(0.1f, 1000.0f, (float)ClientSize.Width / (float)ClientSize.Height, 3.14159265f / 2.0f);
+            cam.SetProjection(0.1f, 1000.0f, (float)ClientSize.Width / (float)ClientSize.Height, 3.14159265f / 4.0f);
 
-            cam.Position = new Vector3(0.0f, 0.0f, 0.0f);
+            cam.Position = new Vector3(0.0f, 0.0f, 5.0f);
             cam.SceneRenderTask = sceneRender;
 
             sceneRender.cam = cam;
