@@ -47,6 +47,24 @@ namespace Horde {
                 }));
             };
 
+            this.MouseDown += (o, e) => {
+                eventManager.ProcessEvent(new EventMouseDown(new SMouseEvent() {
+                    position = e.Location,
+                    button = e.Button
+                }));
+            };
+            this.MouseUp += (o, e) => {
+                eventManager.ProcessEvent(new EventMouseUp(new SMouseEvent() {
+                    position = e.Location,
+                    button = e.Button
+                }));
+            };
+            this.MouseMove += (o, e) => {
+                eventManager.ProcessEvent(new EventMouseMove(new SMouseEvent() {
+                    position = e.Location
+                }));
+            };
+
             engine = new HordeEngine();
             engine.Init(this);
 

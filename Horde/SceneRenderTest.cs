@@ -49,7 +49,7 @@ namespace Horde {
         public override void Execute(RenderPipeline pipeline) {
             vertexShader.SetParameterMatrix("projMatrix", Matrix.Transpose(cam.ProjectionMatrix));
             vertexShader.SetParameterMatrix("viewMatrix", Matrix.Transpose(cam.ViewMatrix));
-            world = world *Matrix.RotationZ(0.001f);
+//            world = world *Matrix.RotationX(0.001f);
             vertexShader.SetParameterMatrix("worldMatrix", Matrix.Transpose(world));
 
             pipeline.DeviceContext.InputAssembler.InputLayout = layout;

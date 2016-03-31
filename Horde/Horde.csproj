@@ -119,6 +119,10 @@
     <Compile Include="Engine\Events\EventKeyUp.cs" />
     <Compile Include="Engine\Events\EventListener.cs" />
     <Compile Include="Engine\Events\EventManager.cs" />
+    <Compile Include="Engine\Events\EventMouse.cs" />
+    <Compile Include="Engine\Events\EventMouseDown.cs" />
+    <Compile Include="Engine\Events\EventMouseMove.cs" />
+    <Compile Include="Engine\Events\EventMouseUp.cs" />
     <Compile Include="Engine\Events\IParentEventListener.cs" />
     <Compile Include="Engine\Events\MemberEventListener.cs" />
     <Compile Include="Engine\FirstPersonCamera.cs" />
@@ -157,6 +161,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

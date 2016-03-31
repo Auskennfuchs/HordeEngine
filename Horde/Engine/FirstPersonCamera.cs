@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using Horde.Engine.Events;
 using SlimDX;
 
@@ -21,6 +17,9 @@ namespace Horde.Engine {
 
         private bool[] keyPressed = new bool[(int)ControlKeys.NUM_KEYS];
 
+        private bool mousedown = false;
+        private Point mousepos, delta;
+
         public float Speed {
             get; set;
         }
@@ -30,6 +29,9 @@ namespace Horde.Engine {
             RegisterEvent(EventType.KEYDOWN);
             RegisterEvent(EventType.KEYUP);
             RegisterEvent(EventType.FRAME_START);
+            RegisterEvent(EventType.MOUSE_DOWN);
+            RegisterEvent(EventType.MOUSE_UP);
+            RegisterEvent(EventType.MOUSE_MOVE);
             timer = new Timer();
             timer.Start();
             Speed = 1.0f;
@@ -73,6 +75,30 @@ namespace Horde.Engine {
                         }
                     }
                     break;
+                case EventType.MOUSE_DOWN: {
+                        var mev = (EventMouse)ev;
+                        if(mev.Data.button==System.Windows.Forms.MouseButtons.Left) {
+                            mousedown = true;
+                            mousepos = mev.Data.position;
+                        }
+                        break;
+                    }
+                case EventType.MOUSE_UP: {
+                        var mev = (EventMouse)ev;
+                        if (mev.Data.button == System.Windows.Forms.MouseButtons.Left) {
+                            mousedown = false;
+                        }
+                        break;
+                    }
+                case EventType.MOUSE_MOVE: {
+                        var mev = (EventMouse)ev;
+                        if (mousedown) {
+                            delta = new Point(delta.X + mousepos.X - mev.Data.position.X, 
+                                              delta.Y + mousepos.Y - mev.Data.position.Y);
+                            mousepos = mev.Data.position;
+                        }
+                        break;
+                    }
                 case EventType.FRAME_START: {
                         Update();
                     }
@@ -83,7 +109,14 @@ namespace Horde.Engine {
 
         private void Update() {
             float elapsed = timer.Restart();
-            if(keyPressed[(int)ControlKeys.RIGHT]) {
+            if (mousedown) {
+                Rotation += new Vector3(delta.X, delta.Y, 0.0f) * elapsed;
+                delta = Point.Empty;
+            }
+
+            Vector3 addPos = Vector3.Zero;
+
+            if (keyPressed[(int)ControlKeys.RIGHT]) {
                 Position -= new Vector3(Speed, 0, 0)*elapsed;
             }
             if (keyPressed[(int)ControlKeys.LEFT]) {
@@ -95,6 +128,15 @@ namespace Horde.Engine {
             if (keyPressed[(int)ControlKeys.BACKWARD]) {
                 Position += new Vector3(0, 0, Speed) * elapsed;
             }
+        }
+
+        protected override Matrix UpdateViewMatrix() {
+            qrot = Quaternion.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+
+            var mat = Matrix.Identity;
+            mat = Matrix.Multiply(Matrix.Translation(pos), Matrix.RotationQuaternion(qrot));
+
+            return mat;
         }
 
     }

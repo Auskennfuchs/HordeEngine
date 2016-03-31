@@ -25,6 +25,19 @@ namespace Horde.Engine {
                 needUpdate = true;
             }
         }
+
+        protected Quaternion qrot;
+        protected Vector3 rot;
+        public Vector3 Rotation {
+            get {
+                return rot;
+            }
+            set {
+                rot = value;
+                needUpdate = true;
+            }
+        }
+
         protected Matrix viewMatrix;
         private bool needUpdate = false;
 
@@ -54,9 +67,17 @@ namespace Horde.Engine {
         private void UpdateCamMatrices() {
             if(needUpdate) {
                 needUpdate = false;
-                viewMatrix = Matrix.Identity;
-                viewMatrix = Matrix.Translation(pos);
+                viewMatrix = UpdateViewMatrix();
             }
+        }
+
+        protected virtual Matrix UpdateViewMatrix() {
+            qrot = Quaternion.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+
+            var mat = Matrix.Identity;
+            mat = Matrix.Multiply(Matrix.RotationQuaternion(qrot),Matrix.Translation(pos));
+
+            return mat;
         }
 
         public void RenderFrame(Renderer renderer) {
