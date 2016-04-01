@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using Horde.Engine.Events;
 using SlimDX;
+using System.Diagnostics;
+using System;
 
 namespace Horde.Engine {
     class FirstPersonCamera : Camera{
@@ -109,35 +111,40 @@ namespace Horde.Engine {
 
         private void Update() {
             float elapsed = timer.Restart();
-            if (mousedown) {
-                Rotation += new Vector3(delta.X, delta.Y, 0.0f) * elapsed;
-                delta = Point.Empty;
-            }
-
-            Vector3 addPos = Vector3.Zero;
-
             if (keyPressed[(int)ControlKeys.RIGHT]) {
-                Position -= new Vector3(Speed, 0, 0)*elapsed;
+                Position += GetRightVector() * (Speed * elapsed);
             }
             if (keyPressed[(int)ControlKeys.LEFT]) {
-                Position += new Vector3(Speed, 0, 0) * elapsed;
+                Position += GetLeftVector() * (Speed * elapsed);
             }
             if (keyPressed[(int)ControlKeys.FORWARD]) {
-                Position -= new Vector3(0, 0, Speed) * elapsed;
+                Position += GetForwardVector() * (Speed * elapsed);
             }
             if (keyPressed[(int)ControlKeys.BACKWARD]) {
-                Position += new Vector3(0, 0, Speed) * elapsed;
+                Position += GetBackwardVector() * (Speed * elapsed);
+            }
+
+            if (mousedown) {
+                Rotation = new Vector3(Rotation.X+delta.X*elapsed, Rotation.Y+delta.Y*elapsed, Rotation.Z);
+                delta = Point.Empty;
+                ClampRotation();
             }
         }
 
         protected override Matrix UpdateViewMatrix() {
+            Debug.WriteLine("Rotation:"+Rotation);
             qrot = Quaternion.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+            qrot.Normalize();
 
-            var mat = Matrix.Identity;
-            mat = Matrix.Multiply(Matrix.Translation(pos), Matrix.RotationQuaternion(qrot));
+            var mpos = Matrix.Translation(Position*-1.0f);
+            var mrot = Matrix.RotationQuaternion(-qrot);
 
-            return mat;
+            return Matrix.Multiply(mpos, mrot);
         }
 
+        private void ClampRotation() {
+            rot.Y = Math.Min(rot.Y, 1.0f);
+            rot.Y = Math.Max(rot.Y, -1.0f);
+        }
     }
 }

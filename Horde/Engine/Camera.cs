@@ -27,6 +27,10 @@ namespace Horde.Engine {
         }
 
         protected Quaternion qrot;
+        public Quaternion QRot {
+            get { return qrot; }
+        }
+
         protected Vector3 rot;
         public Vector3 Rotation {
             get {
@@ -73,11 +77,9 @@ namespace Horde.Engine {
 
         protected virtual Matrix UpdateViewMatrix() {
             qrot = Quaternion.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+            qrot.Normalize();
 
-            var mat = Matrix.Identity;
-            mat = Matrix.Multiply(Matrix.RotationQuaternion(qrot),Matrix.Translation(pos));
-
-            return mat;
+            return Matrix.Multiply(Matrix.RotationQuaternion(qrot),Matrix.Translation(pos));
         }
 
         public void RenderFrame(Renderer renderer) {
@@ -89,6 +91,36 @@ namespace Horde.Engine {
 
         public override bool HandleEvent(IEvent ev) {
             throw new NotImplementedException();
+        }
+
+        private static Vector3 RIGHT_VECTOR = new Vector3(1.0f, 0.0f, 0.0f);
+        private static Vector3 LEFT_VECTOR = new Vector3(-1.0f, 0.0f, 0.0f);
+        private static Vector3 FORWARD_VECTOR = new Vector3(0.0f, 0.0f, 1.0f);
+        private static Vector3 BACKWARD_VECTOR = new Vector3(0.0f, 0.0f, -1.0f);
+
+        protected Vector3 GetRightVector() {
+            Vector4 vec = Vector3.Transform(RIGHT_VECTOR, Quaternion.Conjugate(qrot));
+            var res = new Vector3(vec.X, vec.Y, vec.Z);
+            res.Normalize();
+            return res;
+        }
+        protected Vector3 GetLeftVector() {
+            Vector4 vec = Vector3.Transform(LEFT_VECTOR, Quaternion.Conjugate(qrot));
+            var res = new Vector3(vec.X, vec.Y, vec.Z);
+            res.Normalize();
+            return res;
+        }
+        protected Vector3 GetForwardVector() {
+            Vector4 vec = Vector3.Transform(FORWARD_VECTOR, Quaternion.Conjugate(qrot));
+            var res = new Vector3(vec.X, vec.Y, vec.Z);
+            res.Normalize();
+            return res;
+        }
+        protected Vector3 GetBackwardVector() {
+            Vector4 vec = Vector3.Transform(BACKWARD_VECTOR, Quaternion.Conjugate(qrot));
+            var res = new Vector3(vec.X, vec.Y, vec.Z);
+            res.Normalize();
+            return res;
         }
     }
 }

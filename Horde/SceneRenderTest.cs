@@ -42,8 +42,8 @@ namespace Horde {
             vertexBuffer = new Buffer(Renderer.Instance.Device, vertices, vertexSize, ResourceUsage.Default, BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             vertices.Close();
 
-            world = Matrix.Translation(0.0f, 0.0f, 0.0f);
-            world = Matrix.Identity;
+            world = Matrix.Translation(0.0f, 0.0f, 5.0f);
+//            world = Matrix.Identity;
         }
 
         public override void Execute(RenderPipeline pipeline) {

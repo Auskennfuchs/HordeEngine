@@ -77,7 +77,7 @@ namespace Horde {
             cam.EventManager = eventManager;
             cam.SetProjection(0.1f, 1000.0f, (float)ClientSize.Width / (float)ClientSize.Height, 3.14159265f / 4.0f);
 
-            cam.Position = new Vector3(0.0f, 0.0f, 5.0f);
+            cam.Position = new Vector3(0.0f, 0.0f, 0.0f);
             cam.SceneRenderTask = sceneRender;
 
             sceneRender.cam = cam;
