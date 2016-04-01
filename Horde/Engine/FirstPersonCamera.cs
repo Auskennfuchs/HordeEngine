@@ -2,7 +2,7 @@
 using Horde.Engine.Events;
 using SlimDX;
 using System.Diagnostics;
-using System;
+using Horde.Engine.Math;
 
 namespace Horde.Engine {
     class FirstPersonCamera : Camera{
@@ -111,6 +111,14 @@ namespace Horde.Engine {
 
         private void Update() {
             float elapsed = timer.Restart();
+            if (mousedown) {
+                AddRotation(Vec3.UP, delta.X * elapsed);
+                AddRotation(GetRightVector(), delta.Y * elapsed);
+                //                Rotation = new Vector3(Rotation.X+delta.X*elapsed, Rotation.Y+delta.Y*elapsed, Rotation.Z);
+                delta = Point.Empty;
+                ClampRotation();
+            }
+
             if (keyPressed[(int)ControlKeys.RIGHT]) {
                 Position += GetRightVector() * (Speed * elapsed);
             }
@@ -123,18 +131,13 @@ namespace Horde.Engine {
             if (keyPressed[(int)ControlKeys.BACKWARD]) {
                 Position += GetBackwardVector() * (Speed * elapsed);
             }
-
-            if (mousedown) {
-                Rotation = new Vector3(Rotation.X+delta.X*elapsed, Rotation.Y+delta.Y*elapsed, Rotation.Z);
-                delta = Point.Empty;
-                ClampRotation();
-            }
         }
 
         protected override Matrix UpdateViewMatrix() {
-            Debug.WriteLine("Rotation:"+Rotation);
-            qrot = Quaternion.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
-            qrot.Normalize();
+            Debug.WriteLine("Right:" + GetRightVector());
+
+//            qrot = Quaternion.RotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+//            qrot.Normalize();
 
             var mpos = Matrix.Translation(Position*-1.0f);
             var mrot = Matrix.RotationQuaternion(-qrot);
@@ -143,8 +146,8 @@ namespace Horde.Engine {
         }
 
         private void ClampRotation() {
-            rot.Y = Math.Min(rot.Y, 1.0f);
-            rot.Y = Math.Max(rot.Y, -1.0f);
+//            rot.Y = System.Math.Min(rot.Y, 1.0f);
+//            rot.Y = System.Math.Max(rot.Y, -1.0f);
         }
     }
 }

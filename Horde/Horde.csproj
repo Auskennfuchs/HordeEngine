@@ -128,6 +128,7 @@
     <Compile Include="Engine\FirstPersonCamera.cs" />
     <Compile Include="Engine\HordeException.cs" />
     <Compile Include="Engine\Events\IEvent.cs" />
+    <Compile Include="Engine\Math\Vec3.cs" />
     <Compile Include="Engine\MatrixParameter.cs" />
     <Compile Include="Engine\OutputMergerStage.cs" />
     <Compile Include="Engine\ParameterManager.cs" />
@@ -182,9 +183,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Engine\Math\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
