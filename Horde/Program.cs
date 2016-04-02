@@ -1,5 +1,5 @@
 ﻿using System;
-using SlimDX.Windows;
+using SharpDX.Windows;
 using System.Windows.Forms;
 
 namespace Horde {
@@ -14,7 +14,7 @@ namespace Horde {
             try
             {
                 var form = new MainWindow("Horde");
-                MessagePump.Run(form, form.MainLoop);
+                RenderLoop.Run(form, form.MainLoop);
                 form.Close();
             }
             catch (Exception exc)

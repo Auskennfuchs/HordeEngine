@@ -1,12 +1,13 @@
 ﻿using System;
 using Horde.Engine;
 using Horde.Engine.Task;
-using SlimDX.Direct3D11;
-using SlimDX;
-using SlimDX.DXGI;
-using Buffer = SlimDX.Direct3D11.Buffer;
+using SharpDX;
+using SharpDX.Direct3D11;
+using Buffer = SharpDX.Direct3D11.Buffer;
 using VertexShader = Horde.Engine.Shader.VertexShader;
 using PixelShader = Horde.Engine.Shader.PixelShader;
+using SharpDX.DXGI;
+using SharpDX.Direct3D;
 
 namespace Horde {
     class SceneRenderTest : SceneRenderTask, IDisposable {
@@ -63,18 +64,18 @@ namespace Horde {
                 FillMode = FillMode.Solid,
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = false,
-                IsFrontCounterclockwise = false,
+                IsFrontCounterClockwise = false,
                 IsMultisampleEnabled = false,
                 IsScissorEnabled = false,
                 SlopeScaledDepthBias = 0.0f
             };
 
-            var rs = RasterizerState.FromDescription(Renderer.Instance.Device, desc);
+            var rs = new RasterizerState(Renderer.Instance.Device, desc);
 
             pipeline.DeviceContext.Rasterizer.State = rs;
             vertexShader.Apply(pipeline.DeviceContext);
             pixelShader.Apply(pipeline.DeviceContext);
-            pipeline.ClearRenderTarget(backBuffer,new Color4(0,0,1.0f));
+            pipeline.ClearRenderTarget(backBuffer,new Color4(0.0f,0.0f,1.0f,1.0f));
             pipeline.OutputMergerStage.SetRenderTarget(0, backBuffer);
             pipeline.ApplyRenderTargets();
             backBuffer.Activate(pipeline);

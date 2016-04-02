@@ -1,7 +1,7 @@
 ﻿using System;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-using PShader = SlimDX.Direct3D11.PixelShader;
+using SharpDX.D3DCompiler;
+using SharpDX.Direct3D11;
+using PShader = SharpDX.Direct3D11.PixelShader;
 
 namespace Horde.Engine.Shader {
     public class PixelShader : ShaderBase {

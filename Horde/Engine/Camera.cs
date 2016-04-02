@@ -1,5 +1,5 @@
 ﻿using System;
-using SlimDX;
+using SharpDX;
 using Horde.Engine.Task;
 using Horde.Engine.Events;
 using Horde.Engine.Math;
@@ -117,10 +117,7 @@ namespace Horde.Engine {
         }
 
         private Vector3 GetRotationVector(Vector3 vecin) {
-            Vector4 vec = Vector3.Transform(vecin, Quaternion.Conjugate(qrot));
-            var res = new Vector3(vec.X, vec.Y, vec.Z);
-            res.Normalize();
-            return res;
+            return Vector3.Transform(vecin, Quaternion.Conjugate(qrot));
         }
     }
 }

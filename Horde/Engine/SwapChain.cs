@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
-using SlimDX;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
-using DXSwapChain = SlimDX.DXGI.SwapChain;
-using Resource = SlimDX.Direct3D11.Resource;
+using SharpDX;
+using SharpDX.Direct3D11;
+using SharpDX.DXGI;
+using DXSwapChain = SharpDX.DXGI.SwapChain;
+using Resource = SharpDX.Direct3D11.Resource;
 
 namespace Horde.Engine
 {
@@ -57,16 +57,17 @@ namespace Horde.Engine
                 SwapEffect = SwapEffect.Discard
             };
 
-            swapChain = new DXSwapChain(Renderer.Instance.Device.Factory, Renderer.Instance.Device, swapChainDescriptor);
+            var factory = new Factory1();
+            swapChain = new DXSwapChain(factory, Renderer.Instance.Device, swapChainDescriptor);
 
             using (var resource = Resource.FromSwapChain<Texture2D>(swapChain, 0))
             {
                 renderTarget = new RenderTarget(resource);
             }
 
-            using (var factory = swapChain.GetParent<Factory>())
+            using (var fac = swapChain.GetParent<Factory>())
             {
-                factory.SetWindowAssociation(form.Handle, WindowAssociationFlags.IgnoreAltEnter);
+                fac.MakeWindowAssociation(form.Handle, WindowAssociationFlags.IgnoreAltEnter);
             }
 
             form.ResizeBegin += (o, e) =>

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
-using SlimDX;
-using SlimDX.DXGI;
-using SlimDX.Direct3D11;
-using Device = SlimDX.Direct3D11.Device;
-using Resource = SlimDX.Direct3D11.Resource;
-using ResultCode = SlimDX.Direct3D11.ResultCode;
+using SharpDX;
+using SharpDX.DXGI;
+using SharpDX.Direct3D11;
+using Device = SharpDX.Direct3D11.Device;
+using Resource = SharpDX.Direct3D11.Resource;
+using ResultCode = SharpDX.Direct3D11.ResultCode;
 
 namespace Horde.Engine
 {

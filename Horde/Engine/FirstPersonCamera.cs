@@ -1,8 +1,8 @@
-﻿using System.Drawing;
-using Horde.Engine.Events;
-using SlimDX;
+﻿using Horde.Engine.Events;
+using SharpDX;
 using System.Diagnostics;
 using Horde.Engine.Math;
+using Point = System.Drawing.Point;
 
 namespace Horde.Engine {
     class FirstPersonCamera : Camera{

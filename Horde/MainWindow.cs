@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using SwapChain = Horde.Engine.SwapChain;
 using Horde.Engine.Events;
-using SlimDX;
+using SharpDX;
 
 namespace Horde {
     public class MainWindow : Form

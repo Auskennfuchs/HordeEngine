@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using SlimDX;
-using SlimDX.Direct3D11;
-using Buffer = SlimDX.Direct3D11.Buffer;
+using SharpDX;
+using SharpDX.Direct3D11;
+using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace Horde.Engine {
     public class ConstantBuffer : IDisposable {
@@ -53,8 +53,9 @@ namespace Horde.Engine {
 
         public void UpdateBuffer(DeviceContext context) {
             UpdateCpuBuffer();
-            DataBox db = context.MapSubresource(Buffer, MapMode.WriteDiscard, MapFlags.None);
-            db.Data.Write(cpuBuffer, 0, bufferSize);
+            DataStream ds;
+            context.MapSubresource(Buffer, 0, MapMode.WriteDiscard, MapFlags.None, out ds);
+            ds.Write(cpuBuffer, 0, bufferSize);
             context.UnmapSubresource(Buffer, 0);
         }
 

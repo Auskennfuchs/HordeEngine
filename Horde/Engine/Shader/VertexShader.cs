@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-using SlimDX;
+using SharpDX.D3DCompiler;
+using SharpDX.Direct3D11;
 
-using VShader = SlimDX.Direct3D11.VertexShader;
-using Buffer = SlimDX.Direct3D11.Buffer;
+using VShader = SharpDX.Direct3D11.VertexShader;
 
 namespace Horde.Engine.Shader {
     public class VertexShader : ShaderBase {        
@@ -40,7 +38,7 @@ namespace Horde.Engine.Shader {
             context.VertexShader.Set(vertexShader);
             for(int i=0;i<constantBuffers.Count;i++) {
                 constantBuffers[i].UpdateBuffer(context);
-                context.VertexShader.SetConstantBuffer(constantBuffers[i].Buffer, i);
+                context.VertexShader.SetConstantBuffer(i,constantBuffers[i].Buffer);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
-using SlimDX.Direct3D11;
+using SharpDX.Direct3D11;
+using SharpDX;
 
 namespace Horde.Engine { 
     public class RenderTarget : IDisposable {
@@ -34,14 +35,14 @@ namespace Horde.Engine {
 
         public void Activate(RenderPipeline pipeline) {
 //            pipeline.DeviceContext.OutputMerger.SetTargets(rtv);
-            pipeline.DeviceContext.Rasterizer.SetViewports(Viewport);
+            pipeline.DeviceContext.Rasterizer.SetViewport(Viewport);
         }
 
         public void Resize(int width, int height, Resource src) {
             ReCreate(src);
         }
 
-        public void SetViewport(float x, float y, float width, float height) {
+        public void SetViewport(int x, int y, int width, int height) {
             Viewport = new Viewport(x, y, width, height);
         }
     }
